@@ -1,0 +1,42 @@
+# species map script
+
+# set your working directory
+setwd()
+
+# import libraries
+library(maps)
+library(mapdata)
+library(maptools)
+library(sp)
+library(scales)
+library(tmap)
+library(raster)
+library(ggplot2) 
+
+
+# base map
+map('worldHires', c('Mexico', 'Guatemala', 'Belize'), col='gray95', fill=T, xlim=c(-95.5,-84.5), ylim=c(16.5,21.5))
+
+# make a shape for the range of A. palliata (apa) and plot it
+apashp <- readShapePoly('palliata_range/data_0.shp')
+plot(apashp, col=alpha('gray', 0.8), border=F, add=TRUE)
+
+# make a shape for the range of A. pigra (api) and plot it
+apishp <- readShapePoly('pigra_range/data_0.shp')
+plot(apishp, col=alpha('gray25', 0.8), border=F, add=TRUE)
+
+# read in file that has GPS coordinates of sampling sites
+p <- read.csv('MapApaApi.csv', header=TRUE) 
+points(p$Longitude[1:8], p$Latitude[1:8], pch=19, col='cyan', cex=0.8)
+points(p$Longitude[9:13], p$Latitude[9:13], pch=19, col='coral4', cex=0.8)
+
+# define your sampling sites
+sites<-c(expression(italic('A. palliata')), expression(italic('A. pigra')))
+c<-c('cyan','coral4')
+
+# add legends
+legend('left', legend=c(expression(italic('A. palliata')), expression(italic('A. pigra'))), pch=15, bty='n', col=c('gray','gray25'), cex=1.0)
+legend('topleft', legend=sites, pch=19, bty='n', col=c('cyan','coral4'), cex=1.0)
+
+# add scalebar in kilometers
+scalebar(d=100, xy= c(-95.4, 16.8), type='bar', divs=4, below= "km", lonlat=T, lwd=0.8, cex=0.7)
